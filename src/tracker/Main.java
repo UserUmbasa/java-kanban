@@ -15,20 +15,20 @@ public class Main {
     public static void CheckingSimpleTasks() {
         TaskManager taskManager = new TaskManager();
         System.out.println("------------------Добавление Task--------------------");
-        Integer idTask = taskManager.addTask(new Task("Cтол", "Убрать", TypeOfTask.NEW)).getId();
-        Integer idTask2 = taskManager.addTask(new Task("Пол", "помыть", TypeOfTask.NEW)).getId();
+        taskManager.addTask(new Task("Cтол", "Убрать", TypeOfTask.NEW));
+        taskManager.addTask(new Task("Пол", "помыть", TypeOfTask.NEW));
         System.out.println(taskManager.getAddTask());
         System.out.println("------------------Обновление Task--------------------");
-        taskManager.updatingTask(idTask, new Task("Cтол", "попросить жену", TypeOfTask.DONE));
-        taskManager.updatingTask(idTask2, new Task("Пол", "забить болт", TypeOfTask.IN_PROGRESS));
+        taskManager.updatingTask(0, new Task("Cтол", "попросить жену", TypeOfTask.DONE));
+        taskManager.updatingTask(1, new Task("Пол", "забить болт", TypeOfTask.IN_PROGRESS));
         System.out.println(taskManager.getAddTask());
         System.out.println("------------------Возврат Task по айди --------------------");
-        System.out.println(taskManager.getIdTask(idTask2));
+        System.out.println(taskManager.getIdTask(6));
         System.out.println("------------------Удаление Task по айди --------------------");
-        taskManager.deleteIdTask(idTask2);
+        taskManager.deleteIdTask(6);
         System.out.println(taskManager.getAddTask());
         System.out.println("------------------Удаление Tasks --------------------");
-        System.out.println(taskManager.deleteAllTask());
+        taskManager.deleteAllTask();
         System.out.println(taskManager.getAddTask());
     }
 
@@ -47,10 +47,10 @@ public class Main {
         SubTask subtask2 = new SubTask("вечер", "убраться в комнате", TypeOfTask.DONE);//3
         SubTask subtask3 = new SubTask("день", "Позаниматься кодом ", TypeOfTask.NEW);//4
         SubTask subtask4 = new SubTask("день", "Позаниматься кодом ", TypeOfTask.NEW);//4
-        Integer idSubTask = taskManager.addSubTask(epic.getId(), subtask1).getId();
-        Integer idSubTask2 = taskManager.addSubTask(epic.getId(), subtask2).getId();
-        Integer idSubTask3 = taskManager.addSubTask(epic.getId(), subtask3).getId();
-        Integer idSubTask4 = taskManager.addSubTask(epic.getId(), subtask4).getId(); //вернет тот же объект
+        taskManager.addSubTask(0, subtask1);
+        taskManager.addSubTask(0, subtask2);
+        taskManager.addSubTask(1, subtask3);
+        taskManager.addSubTask(1, subtask4); //вернет тот же объект
         System.out.println("------------------Вывод SubTask--------------------");
         System.out.println(taskManager.getAddSubTask());
         System.out.println();
@@ -60,14 +60,17 @@ public class Main {
         System.out.println("------------------Вывод EpicTask [id]--------------------");
         System.out.println(taskManager.getIdEpic(5));
         System.out.println(taskManager.getIdEpic(0));
-        System.out.println("------------------Вывод Epic [id]--------------------");
+        System.out.println("------------------Вывод SubTask -> Epic [id]--------------------");
         System.out.println(taskManager.getListSubTaskEpic(0));
         System.out.println(taskManager.getListSubTaskEpic(1));
         System.out.println(taskManager.getListSubTaskEpic(8));
-//        System.out.println("------------------обновление SubTask [id]--------------------");
-//        taskManager.updatingSubTask(2,new SubTask("утро", "убраться на кухне",TypeOfTask.IN_PROGRESS));
-//        System.out.println(taskManager.getAddSubTask());
-//        System.out.println(taskManager.getAddEpic());
+        System.out.println("------------------обновление SubTask [id]--------------------");
+        System.out.println(taskManager.getAddEpic());
+        System.out.println(taskManager.getAddSubTask());
+        System.out.println("------------------обновление......--------------------");
+        taskManager.updatingSubTask(2,new SubTask("утро", "убраться на кухне",TypeOfTask.IN_PROGRESS));
+        System.out.println(taskManager.getAddEpic());
+        System.out.println(taskManager.getAddSubTask());
 //        System.out.println("------------------обновление Epic  [id]--------------------");
 //        taskManager.updatingEpicTask(0,new tracker.model.Epic("План на сегодня","Кухня и комната",tracker.model.TypeOfTask.NEW));
 //        System.out.println(taskManager.getAddSubTask());

@@ -21,52 +21,29 @@ public class TaskManager {
         this.mapEpic = new HashMap<>();
         this.mapSubTask = new HashMap<>();
     }
-    //------------------------Создание. Сам объект должен передаваться в качестве параметра.(нужно вернуть его)-----------
+    //------------------------Создание. Сам объект должен передаваться в качестве параметра.-----------
 
-    public Task addTask(Task task) {
+    public void addTask(Task task) {
         if (!mapTask.containsValue(task)) {
             task.setId(id);
             mapTask.put(id++, task);
-        }else {
-            for (Task value : mapTask.values()) {
-                if (value.equals(task)) {
-                    return value;
-                }
-            }
         }
-        return task;
     }
 
-    public SubTask addSubTask(int idEpic, SubTask subtask) {
-        if (mapEpic.containsKey(idEpic)) {
-            if (!mapSubTask.containsValue(subtask)) {
-                subtask.setId(id);
-                mapEpic.get(idEpic).getIdAllSubTask().add(id);
-                mapSubTask.put(id++, subtask);
-                updatingEpicStatus(idEpic);
-            }else {
-                for (SubTask value : mapSubTask.values()) {
-                    if (value.equals(subtask)) {
-                        return value;
-                    }
-                }
-            }
+    public void addSubTask(int idEpic, SubTask subtask) {
+        if (mapEpic.containsKey(idEpic) && !mapSubTask.containsValue(subtask)) {
+            subtask.setId(idEpic);//Для каждой подзадачи известно, в рамках какого эпика она выполняется.
+            mapEpic.get(idEpic).getIdAllSubTask().add(id);
+            mapSubTask.put(id++, subtask);
+            updatingEpicStatus(idEpic);
         }
-        return subtask;
     }
 
-    public Epic addEpic(Epic epic) {
+    public void addEpic(Epic epic) {
         if (!mapEpic.containsValue(epic)) {
             epic.setId(id);
             mapEpic.put(id++, epic);
-        }else {
-            for (Epic value : mapEpic.values()) {
-                if (value.equals(epic)) {
-                    return value;
-                }
-            }
         }
-        return epic;
     }
 
     //------------------- Получение списка всех задач.------------------
@@ -83,117 +60,93 @@ public class TaskManager {
     }
 
     //----------------------------Удаление всех задач.---------------------------
-    public List<Task> deleteAllTask() {
-        List<Task> result = new ArrayList<>(mapTask.values());
+    public void deleteAllTask() {
         mapTask.clear();
-        return result;
     }
 
-    public List<SubTask> deleteAllSubTask() {
-        List<SubTask> result = new ArrayList<>(mapSubTask.values());
+    public void deleteAllSubTask() {
         for (Integer idEpic : mapEpic.keySet()) {
             mapEpic.get(idEpic).getIdAllSubTask().clear();
             updatingEpicStatus(idEpic);
         }
         mapSubTask.clear();
-        return result;
     }
 
-    public List<Epic> deleteAllEpic() {
-        List<Epic>result = new ArrayList<>(mapEpic.values());
+    public void deleteAllEpic() {
         mapSubTask.clear();
         mapEpic.clear();
-        return result;
     }
 
     //---------------------Получение по идентификатору.----------------------------
     public Task getIdTask(Integer id) {
-        if (mapTask.containsKey(id)) {
-            return mapTask.get(id);
-        }
-        return null;
+        return mapTask.get(id);
     }
 
     public SubTask getIdSubTask(Integer id) {
-        if (mapSubTask.containsKey(id)) {
-            return mapSubTask.get(id);
-        }
-        return null;
+        return mapSubTask.get(id);
     }
 
     public Epic getIdEpic(Integer id) {
-        if (mapEpic.containsKey(id)) {
-            return mapEpic.get(id);
-        }
-        return null;
+        return mapEpic.get(id);
     }
 
 
     //---------Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.---
-    public Task updatingTask(Integer id, Task task) {
+    public void updatingTask(Integer id, Task task) {
         task.setId(id);
         mapTask.put(id, task);
-        return task;
     }
 
-    public SubTask updatingSubTask(Integer id, SubTask subTask) {
-        subTask.setId(id);
+    public void updatingSubTask(Integer id, SubTask subTask) {
         mapSubTask.put(id, subTask);
         for (Integer idEpic : mapEpic.keySet()) {
             if (mapEpic.get(idEpic).getIdAllSubTask().contains(id)) {
+                subTask.setId(idEpic); //знает кому принадлежит (приходит ли он с верным внутренним айди, не ясно)
                 updatingEpicStatus(idEpic);
                 break;
             }
         }
-        return subTask;
     }
 
-    public Epic updatingEpicTask(Integer id, Epic epic) {
+    public void updatingEpicTask(Integer id, Epic epic) {
         deleteIdEpic(id);
         epic.setId(id);
         mapEpic.put(id, epic);
-        return epic;
     }
 
     //-----------------------Удаление по идентификатору--------------------------
-    public Task deleteIdTask(Integer id) {
-        Task task = mapTask.get(id);
+    public void deleteIdTask(Integer id) {
         mapTask.remove(id);
-        return task;
     }
 
-    public SubTask deleteIdSubTask(Integer id) {
-        SubTask subTask = mapSubTask.get(id);
+    public void deleteIdSubTask(Integer id) {
         for (Integer idEpic : mapEpic.keySet()) {
-            if (mapEpic.get(idEpic).getIdAllSubTask().contains(id)) {
-                mapEpic.get(idEpic).getIdAllSubTask().remove(id);
+            var result = mapEpic.get(idEpic).getIdAllSubTask();
+            if (result.contains(id)) {
+                result.remove(id);
                 updatingEpicStatus(idEpic);
                 break;
             }
         }
         mapSubTask.remove(id);
-        return subTask;
     }
 
-    public Epic deleteIdEpic(Integer id) {
-        Epic epic = mapEpic.get(id);
+    public void deleteIdEpic(Integer id) {
         for (Integer idSubTask : mapEpic.get(id).getIdAllSubTask()) {
             mapSubTask.remove(idSubTask);
         }
         mapEpic.remove(id);
-        return epic;
     }
 
     //------------------------- Получение списка всех подзадач определённого эпика-------------
     public List<SubTask> getListSubTaskEpic(Integer id) {
+        List<SubTask> result = new ArrayList<>();
         if (mapEpic.containsKey(id)) {
-            List<SubTask> result = new ArrayList<>();
             for (Integer idSubTask : mapEpic.get(id).getIdAllSubTask()) {
                 result.add(mapSubTask.get(idSubTask));
             }
-            return result;
         }
-        return null;
+        return result;
     }
 
     private void updatingEpicStatus(Integer idEpic) {
