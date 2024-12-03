@@ -49,7 +49,7 @@ public class Main {
         SubTask subtask4 = new SubTask("день", "Позаниматься кодом ", TypeOfTask.NEW);//4
         taskManager.addSubTask(0, subtask1);
         taskManager.addSubTask(0, subtask2);
-        taskManager.addSubTask(1, subtask3);
+        taskManager.addSubTask(0, subtask3);
         taskManager.addSubTask(1, subtask4); //вернет тот же объект
         System.out.println("------------------Вывод SubTask--------------------");
         System.out.println(taskManager.getAddSubTask());

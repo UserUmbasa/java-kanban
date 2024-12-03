@@ -31,8 +31,9 @@ public class TaskManager {
     }
 
     public void addSubTask(int idEpic, SubTask subtask) {
+        //Для каждой подзадачи известно, в рамках какого эпика она выполняется
+        subtask.setId(idEpic);
         if (mapEpic.containsKey(idEpic) && !mapSubTask.containsValue(subtask)) {
-            subtask.setId(idEpic);//Для каждой подзадачи известно, в рамках какого эпика она выполняется.
             mapEpic.get(idEpic).getIdAllSubTask().add(id);
             mapSubTask.put(id++, subtask);
             updatingEpicStatus(idEpic);
