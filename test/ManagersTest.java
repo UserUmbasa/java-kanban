@@ -11,8 +11,9 @@ import tracker.service.TaskManager;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ManagersTest {
-    static Managers managers = new Managers();
-    static TaskManager taskManager = managers.getDefault();
+
+    static TaskManager taskManager = Managers.getDefault();
+
     @BeforeAll
     public static void setUp(){
         taskManager.addTask(new Task("Task", "--0--", TypeOfTask.NEW));
@@ -26,7 +27,7 @@ public class ManagersTest {
         assertNotNull(taskManager.getIdEpic(1), "Cписок Epic пуст.");
         assertNotNull(taskManager.getIdSubTask(2), "Cписок SubTask пуст.");
         //сразу проверю историю (согласно ТЗ при вызове этих методов)
-        Assertions.assertEquals(3,Managers.getDefaultHistory().getHistory().size(), "Cписок истории пуст.");
+        Assertions.assertEquals(3,taskManager.getHistory().size(), "Cписок истории пуст.");
     }
 
 }

@@ -1,13 +1,12 @@
 package tracker.service;
 
 import tracker.model.Epic;
-import tracker.model.InMemoryHistoryManager;
 import tracker.model.SubTask;
 import tracker.model.Task;
 
 import java.util.List;
 
-public interface TaskManager {
+public interface TaskManager  {
     void addTask(Task task);
 
     void addSubTask(int idEpic, SubTask subtask);
@@ -52,4 +51,5 @@ public interface TaskManager {
     //------------------------- Получение списка всех подзадач определённого эпика-------------
     List<SubTask> getListSubTaskEpic(Integer id);
     //-------------------------- Получение истории просмотров ------------------
+    List<Task> getHistory();
 }

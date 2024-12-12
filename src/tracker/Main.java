@@ -9,9 +9,9 @@ import tracker.service.TaskManager;
 import tracker.model.TypeOfTask;
 
 public class Main {
-    static Managers managers = new Managers();
+
     public static void main(String[] args) {
-        TaskManager taskManager = managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
         taskManager.addTask(new Task("Task", "--0--", TypeOfTask.NEW));
         taskManager.addEpic(new Epic("Epic", "--1--", TypeOfTask.NEW));;
         taskManager.addSubTask(1,new SubTask("SubTask", "--2--", TypeOfTask.NEW));

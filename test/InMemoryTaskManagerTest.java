@@ -1,10 +1,8 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import tracker.model.Epic;
-import tracker.model.InMemoryHistoryManager;
 import tracker.model.SubTask;
 import tracker.model.Task;
-import tracker.service.HistoryManager;
 import tracker.service.InMemoryTaskManager;
 
 import java.util.List;
@@ -18,8 +16,8 @@ import static tracker.model.TypeOfTask.*;
  */
 
 public class InMemoryTaskManagerTest {
-    HistoryManager historyManager = new InMemoryHistoryManager();
-    InMemoryTaskManager inMemoryTaskManagerTest = new InMemoryTaskManager(historyManager);
+
+    InMemoryTaskManager inMemoryTaskManagerTest = new InMemoryTaskManager();
 
     @Test
     void addNewTask(){
