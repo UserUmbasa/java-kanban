@@ -12,10 +12,10 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> mapTask;
     private final Map<Integer, Epic> mapEpic;
     private final Map<Integer, SubTask> mapSubTask;
-    private final HistoryManager inMemoryHistoryManager;
+    //Managers по сути фабрика
+    private final HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
 
     public InMemoryTaskManager() {
-        this.inMemoryHistoryManager = new InMemoryHistoryManager();
         this.mapTask = new HashMap<>();
         this.mapEpic = new HashMap<>();
         this.mapSubTask = new HashMap<>();
@@ -89,21 +89,19 @@ public class InMemoryTaskManager implements TaskManager {
     //---------------------Получение по идентификатору.----------------------------
     @Override
     public Task getIdTask(Integer id) {
-        //historyManager.add(mapTask.get(id));
+
         inMemoryHistoryManager.add(mapTask.get(id));
         return mapTask.get(id);
     }
 
     @Override
     public SubTask getIdSubTask(Integer id) {
-        //historyManager.add(mapSubTask.get(id));
         inMemoryHistoryManager.add(mapSubTask.get(id));
         return mapSubTask.get(id);
     }
 
     @Override
     public Epic getIdEpic(Integer id) {
-        //historyManager.add(mapEpic.get(id));
         inMemoryHistoryManager.add(mapEpic.get(id));
         return mapEpic.get(id);
     }
