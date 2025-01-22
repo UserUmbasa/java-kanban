@@ -30,5 +30,4 @@ public class ManagersTest {
         //сразу проверю историю (согласно ТЗ при вызове этих методов)
         Assertions.assertEquals(3, taskManager.getHistory().size(), "Cписок истории пуст.");
     }
-
 }

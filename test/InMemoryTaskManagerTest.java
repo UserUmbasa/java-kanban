@@ -4,9 +4,7 @@ import tracker.model.Epic;
 import tracker.model.SubTask;
 import tracker.model.Task;
 import tracker.service.InMemoryTaskManager;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static tracker.model.TypeOfTask.*;

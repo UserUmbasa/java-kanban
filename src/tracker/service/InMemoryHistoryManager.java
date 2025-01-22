@@ -2,7 +2,6 @@ package tracker.service;
 
 import tracker.model.Task;
 
-
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
@@ -15,11 +14,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (mapHistory.containsKey(task.getId())) {
             //получили ссылку на цель
             Node<Task> nodeTarget = mapHistory.get(task.getId());
-            if (tail == nodeTarget) {//если цель это хвост, выход
+            if (tail == nodeTarget) { //если цель это хвост, выход
                 return;
-            } else if (head == nodeTarget) {//если цель это голова (хвост на нее не указывает)
+            } else if (head == nodeTarget) { //если цель это голова (хвост на нее не указывает)
                 //получаем правую ноду
-                head = nodeTarget.next;//делаем ее головой
+                head = nodeTarget.next; //делаем ее головой
                 head.prev = null;
                 //добавляем в конец списка
                 linkLast(nodeTarget);
@@ -32,6 +31,7 @@ public class InMemoryHistoryManager implements HistoryManager {
                 //добавляем в конец списка
                 linkLast(nodeTarget);
             }
+            historyTask.clear(); // сброс буфера
         } else {
             final Node<Task> newNode;
             if (mapHistory.isEmpty()) {
@@ -43,6 +43,7 @@ public class InMemoryHistoryManager implements HistoryManager {
                 linkLast(newNode);
             }
             mapHistory.put(task.getId(), newNode);
+            historyTask.add(task);
         }
     }
 
@@ -56,11 +57,11 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             //получили ссылку на цель
             Node<Task> nodeTarget = mapHistory.get(id);
-            if (tail == nodeTarget) {//если цель это хвост
+            if (tail == nodeTarget) { //если цель это хвост
                 tail = nodeTarget.prev;
                 tail.next = null;
                 mapHistory.remove(id);
-            } else if (head == nodeTarget) {//если цель это голова (хвост на нее не указывает)
+            } else if (head == nodeTarget) { //если цель это голова (хвост на нее не указывает)
                 head = nodeTarget.next;
                 head.prev = null;
                 mapHistory.remove(id);
@@ -72,6 +73,7 @@ public class InMemoryHistoryManager implements HistoryManager {
                 nodeRhs.prev = nodeLhs;
                 mapHistory.remove(id);
             }
+            historyTask.clear(); // сброс буфера
         }
     }
 
@@ -83,18 +85,15 @@ public class InMemoryHistoryManager implements HistoryManager {
         tail.prev = oldTail;
     }
 
-    private void getTasks(Node<Task> target) {
-        historyTask.remove(target.data);
-        historyTask.add(target.data);
-    }
-
     //Реализация метода getHistory должна перекладывать задачи из связного списка в ArrayList для формирования ответа.
     @Override
     public List<Task> getHistory() {
-        Node<Task> current = head; // начинаем с головы
-        while (current != null) {  // пока не дойдем до конца списка
-            historyTask.add(current.data);
-            current = current.next;  // переходим к следующему узлу
+        if(historyTask.isEmpty()) {
+            Node<Task> current = head; // начинаем с головы
+            while (current != null) { // пока не дойдем до конца списка
+                historyTask.add(current.data);
+                current = current.next; // переходим к следующему узлу
+            }
         }
         return List.copyOf(historyTask);
     }

@@ -2,9 +2,7 @@ import org.junit.jupiter.api.Test;
 import tracker.model.*;
 import tracker.service.HistoryManager;
 import tracker.service.InMemoryHistoryManager;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InMemoryHistoryManagerTest {

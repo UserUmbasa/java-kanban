@@ -1,7 +1,6 @@
 package tracker.service;
 
 import tracker.model.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +19,8 @@ public class InMemoryTaskManager implements TaskManager {
         this.mapEpic = new HashMap<>();
         this.mapSubTask = new HashMap<>();
     }
-    //------------------------Создание. Сам объект должен передаваться в качестве параметра.-----------
 
+    //------------------------Создание. Сам объект должен передаваться в качестве параметра.-----------
     @Override
     public void addTask(Task task) {
         if (!mapTask.containsValue(task)) {
@@ -115,7 +114,6 @@ public class InMemoryTaskManager implements TaskManager {
         return mapEpic.get(id);
     }
 
-
     //---------Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.---
     @Override
     public void updatingTask(Integer id, Task task) {
@@ -187,20 +185,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updatingEpicStatus(Integer idEpic) {
         if (!mapEpic.get(idEpic).getIdAllSubTask().isEmpty()) {
-            int count_done = 0;
-            int count_new = 0;
+            int countDone = 0;
+            int countNew = 0;
             int size = mapEpic.get(idEpic).getIdAllSubTask().size();
             for (Integer value : mapEpic.get(idEpic).getIdAllSubTask()) {
                 if (mapSubTask.get(value).getTypeOfTask() == TypeOfTask.NEW) {
-                    count_new++;
+                    countNew++;
                 }
                 if (mapSubTask.get(value).getTypeOfTask() == TypeOfTask.DONE) {
-                    count_done++;
+                    countDone++;
                 }
             }
-            if (count_done == size) {
+            if (countDone == size) {
                 mapEpic.get(idEpic).setTypeOfTask(TypeOfTask.DONE);
-            } else if (count_new == size) {
+            } else if (countNew == size) {
                 mapEpic.get(idEpic).setTypeOfTask(TypeOfTask.NEW);
             } else {
                 mapEpic.get(idEpic).setTypeOfTask(TypeOfTask.IN_PROGRESS);
