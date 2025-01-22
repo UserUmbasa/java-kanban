@@ -88,7 +88,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     //Реализация метода getHistory должна перекладывать задачи из связного списка в ArrayList для формирования ответа.
     @Override
     public List<Task> getHistory() {
-        if(historyTask.isEmpty()) {
+        if (historyTask.isEmpty()) {
             Node<Task> current = head; // начинаем с головы
             while (current != null) { // пока не дойдем до конца списка
                 historyTask.add(current.data);
