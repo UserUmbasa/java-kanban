@@ -33,7 +33,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addSubTask(int idEpic, SubTask subtask) {
         //Для каждой подзадачи известно, в рамках какого эпика она выполняется
-        subtask.setId(idEpic);
+        subtask.setId(id);
         if (mapEpic.containsKey(idEpic) && !mapSubTask.containsValue(subtask)) {
             mapEpic.get(idEpic).getIdAllSubTask().add(id);
             mapSubTask.put(id++, subtask);
@@ -66,8 +66,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     //----------------------------Удаление всех задач.---------------------------
+    //по логике и из истории они отлетают
     @Override
     public void deleteAllTask() {
+        for (Integer integer : mapTask.keySet()) {
+            inMemoryHistoryManager.remove(integer);
+        }
         mapTask.clear();
     }
 
@@ -77,19 +81,24 @@ public class InMemoryTaskManager implements TaskManager {
             mapEpic.get(idEpic).getIdAllSubTask().clear();
             updatingEpicStatus(idEpic);
         }
+        for (Integer integer : mapSubTask.keySet()) {
+            inMemoryHistoryManager.remove(integer);
+        }
         mapSubTask.clear();
     }
 
     @Override
     public void deleteAllEpic() {
-        mapSubTask.clear();
+        deleteAllSubTask();
+        for (Integer integer : mapEpic.keySet()) {
+            inMemoryHistoryManager.remove(integer);
+        }
         mapEpic.clear();
     }
 
     //---------------------Получение по идентификатору.----------------------------
     @Override
     public Task getIdTask(Integer id) {
-
         inMemoryHistoryManager.add(mapTask.get(id));
         return mapTask.get(id);
     }
@@ -119,7 +128,7 @@ public class InMemoryTaskManager implements TaskManager {
         mapSubTask.put(id, subTask);
         for (Integer idEpic : mapEpic.keySet()) {
             if (mapEpic.get(idEpic).getIdAllSubTask().contains(id)) {
-                subTask.setId(idEpic); //знает кому принадлежит (приходит ли он с верным внутренним айди, не ясно)
+                subTask.setId(idEpic);
                 updatingEpicStatus(idEpic);
                 break;
             }
@@ -137,6 +146,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteIdTask(Integer id) {
         mapTask.remove(id);
+        inMemoryHistoryManager.remove(id);
     }
 
     @Override
@@ -145,6 +155,7 @@ public class InMemoryTaskManager implements TaskManager {
             var result = mapEpic.get(idEpic).getIdAllSubTask();
             if (result.contains(id)) {
                 result.remove(id);
+                inMemoryHistoryManager.remove(id);
                 updatingEpicStatus(idEpic);
                 break;
             }
@@ -156,8 +167,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteIdEpic(Integer id) {
         for (Integer idSubTask : mapEpic.get(id).getIdAllSubTask()) {
             mapSubTask.remove(idSubTask);
+            inMemoryHistoryManager.remove(idSubTask);
         }
         mapEpic.remove(id);
+        inMemoryHistoryManager.remove(id);
     }
 
     //------------------------- Получение списка всех подзадач определённого эпика-------------
@@ -196,6 +209,7 @@ public class InMemoryTaskManager implements TaskManager {
             mapEpic.get(idEpic).setTypeOfTask(TypeOfTask.NEW);
         }
     }
+
     @Override
     public List<Task> getHistory() {
         return inMemoryHistoryManager.getHistory();
