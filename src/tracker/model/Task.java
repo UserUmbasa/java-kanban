@@ -7,6 +7,7 @@ public class Task {
     protected String taskDescription;
     protected String taskDetails;
     protected TypeOfTask typeOfTask;
+
     public Integer getId() {
         return id;
     }
@@ -14,6 +15,7 @@ public class Task {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public TypeOfTask getTypeOfTask() {
         return typeOfTask;
     }
