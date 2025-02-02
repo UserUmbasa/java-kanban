@@ -12,6 +12,14 @@ public class Task {
         return id;
     }
 
+    public String getTaskDescription() {
+        return taskDescription;
+    }
+
+    public String getTaskDetails() {
+        return taskDetails;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -40,19 +48,36 @@ public class Task {
                 '}';
     }
 
+//    @Override
+//    public final boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        Task task = (Task) o;
+//        return Objects.equals(id, task.id) && Objects.equals(taskDescription, task.taskDescription) && Objects.equals(taskDetails, task.taskDetails) && typeOfTask == task.typeOfTask;
+//    }
+//
+//    @Override
+//    public final int hashCode() {
+//        int result = Objects.hashCode(id);
+//        result = 31 * result + Objects.hashCode(taskDescription);
+//        result = 31 * result + Objects.hashCode(taskDetails);
+//        result = 31 * result + Objects.hashCode(typeOfTask);
+//        return result;
+//    }
+
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Task task = (Task) o;
-        return Objects.equals(id, task.id) && Objects.equals(taskDescription, task.taskDescription) && Objects.equals(taskDetails, task.taskDetails) && typeOfTask == task.typeOfTask;
+        return Objects.equals(taskDescription, task.taskDescription) && Objects.equals(taskDetails, task.taskDetails) && typeOfTask == task.typeOfTask;
     }
 
     @Override
-    public final int hashCode() {
-        int result = Objects.hashCode(id);
-        result = 31 * result + Objects.hashCode(taskDescription);
+    public int hashCode() {
+        int result = Objects.hashCode(taskDescription);
         result = 31 * result + Objects.hashCode(taskDetails);
         result = 31 * result + Objects.hashCode(typeOfTask);
         return result;
