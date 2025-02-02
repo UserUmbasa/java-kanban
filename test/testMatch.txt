@@ -1,3 +1,0 @@
-Task,0,0,task 0,описание 0,NEW
-Task,1,1,task 1,описание 1,NEW
-2
