@@ -56,6 +56,7 @@ public class FileBackedTaskManagerTest {
         List<String> actualLines = readLines(tempFileTask);  // Список строк из второго файла
         assertEquals(expectedLines, actualLines, "Файлы не совпадают.");
     }
+
     private List<String> readLines(Path filePath) throws IOException {
         List<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {

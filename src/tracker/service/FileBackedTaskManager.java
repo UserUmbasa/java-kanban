@@ -15,7 +15,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public static File FileBackedTaskManager() {
+    public static File fileBackedTaskManager() {
         return new File("History.csv");
     }
 
@@ -131,7 +131,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             strings.add(task.getTaskDescription());
             strings.add(task.getTaskDetails());
             strings.add(task.getTypeOfTask().toString());
-            if(task instanceof Epic) {
+            if (task instanceof Epic) {
                 Epic epic = (Epic) integerTaskEntry.getValue();
                 for (Integer integer : epic.getIdAllSubTask()) {
                     strings.add(integer.toString());

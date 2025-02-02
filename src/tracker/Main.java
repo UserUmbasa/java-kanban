@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         //пусть будет, не уверен в правильности происходящего
-        File file = FileBackedTaskManager.FileBackedTaskManager();
+        File file = FileBackedTaskManager.fileBackedTaskManager();
         FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
         Task task0 = new Task("task 0", "описание 0", NEW);
         Task task1 = new Task("task 1", "описание 1", NEW);
