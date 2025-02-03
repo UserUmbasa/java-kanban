@@ -9,7 +9,7 @@ import static tracker.model.TypeOfTask.NEW;
 public class Main {
 
     public static void main(String[] args) {
-        //пусть будет, не уверен в правильности происходящего
+        //хотел бы оставить для будущих обновлений
         File file = FileBackedTaskManager.fileBackedTaskManager();
         FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile(file);
         Task task0 = new Task("task 0", "описание 0", NEW);
@@ -25,11 +25,8 @@ public class Main {
         fileBackedTaskManager.addSubTask(2,subTask4);
         fileBackedTaskManager.addSubTask(2,subTask5);
         System.out.println(fileBackedTaskManager.getListSubTaskEpic(2));
-        //fileBackedTaskManager.deleteIdTask(0);
         fileBackedTaskManager.deleteIdSubTask(4);
         System.out.println(fileBackedTaskManager);
-        //System.out.println(fileBackedTaskManager.getAddEpic());
-        //System.out.println(fileBackedTaskManager.getAddSubTask());
     }
 }
 

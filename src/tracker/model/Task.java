@@ -7,6 +7,18 @@ public class Task {
     protected String taskDescription;
     protected String taskDetails;
     protected TypeOfTask typeOfTask;
+    protected TaskClassifier taskClassifier;
+
+    public TaskClassifier getTaskClass() {
+        return taskClassifier;
+    }
+
+    public StringBuilder getFormatCsv(int idMap){
+        StringBuilder sb = new StringBuilder();
+        sb.append(taskClassifier).append(',').append(idMap).append(',').append(id).append(',');
+        sb.append(taskDescription).append(',').append(taskDetails).append(',').append(typeOfTask);
+        return sb;
+    }
 
     public Integer getId() {
         return id;
@@ -36,6 +48,7 @@ public class Task {
         this.taskDescription = taskDescription;
         this.typeOfTask = typeOfTask;
         this.taskDetails = taskDetails;
+        taskClassifier = TaskClassifier.TASK;
     }
 
     @Override
@@ -47,24 +60,6 @@ public class Task {
                 ", typeOfTask=" + typeOfTask +
                 '}';
     }
-
-//    @Override
-//    public final boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        Task task = (Task) o;
-//        return Objects.equals(id, task.id) && Objects.equals(taskDescription, task.taskDescription) && Objects.equals(taskDetails, task.taskDetails) && typeOfTask == task.typeOfTask;
-//    }
-//
-//    @Override
-//    public final int hashCode() {
-//        int result = Objects.hashCode(id);
-//        result = 31 * result + Objects.hashCode(taskDescription);
-//        result = 31 * result + Objects.hashCode(taskDetails);
-//        result = 31 * result + Objects.hashCode(typeOfTask);
-//        return result;
-//    }
 
     @Override
     public boolean equals(Object o) {

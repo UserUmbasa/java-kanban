@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    File file;
+    private final File file;
 
     public FileBackedTaskManager(File file) {
         super();
@@ -91,7 +91,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    //-------------------------------Сохранение-----------------------------------
     public void save() {
         try (Writer fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) { //объект потока для потока - вывода для записи символов в файл
             fileWriter.write(this.toString());
@@ -122,22 +121,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private List<String> breakTaskLines(Map<Integer, ? extends Task> map) {
         List<String> result = new ArrayList<>();
         for (Map.Entry<Integer, ? extends Task> integerTaskEntry : map.entrySet()) {
-            //класс->айдиМапы->айдиЗадачи->имя->Описание->Статус->Подзадачи(Епик)
-            List<String> strings = new ArrayList<>();
-            Task task = integerTaskEntry.getValue();
-            strings.add(task.getClass().getSimpleName());
-            strings.add(integerTaskEntry.getKey().toString());
-            strings.add(task.getId().toString());
-            strings.add(task.getTaskDescription());
-            strings.add(task.getTaskDetails());
-            strings.add(task.getTypeOfTask().toString());
-            if (task instanceof Epic) {
+            // перенес логику заполнения в класс
+            StringBuilder str = integerTaskEntry.getValue().getFormatCsv(integerTaskEntry.getKey());
+            if (integerTaskEntry.getValue().getTaskClass() == TaskClassifier.EPIC) {
                 Epic epic = (Epic) integerTaskEntry.getValue();
                 for (Integer integer : epic.getIdAllSubTask()) {
-                    strings.add(integer.toString());
+                    str.append(',');
+                    str.append(integer.toString());
                 }
             }
-            result.add(String.join(",", strings));
+            result.add(str.toString());
         }
         return result;
     }
@@ -165,15 +158,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         if (!tasks.isEmpty()) {
             for (String task : tasks) {
                 String[] split = task.split(",");
-                if (split.length == 1) fileBackedTaskManager.id = Integer.parseInt(split[0]);
-                switch (split[0]) {
-                    //нет общего интерфейса (не получится сделать одним методом)
-                    case "Task" -> {
+                if (split.length == 1) {
+                    fileBackedTaskManager.id = Integer.parseInt(split[0]);
+                    return;
+                }
+                TaskClassifier taskClassifier = TaskClassifier.valueOf(split[0]);
+                switch (taskClassifier) {
+                    case TASK -> {
                         Task temp = new Task(split[3], split[4], TypeOfTask.valueOf(split[5]));
                         temp.setId(Integer.parseInt(split[2]));
                         fileBackedTaskManager.mapTask.put(Integer.parseInt(split[1]), temp);
                     }
-                    case "Epic" -> {
+                    case EPIC -> {
                         Epic temp = new Epic(split[3], split[4], TypeOfTask.valueOf(split[5]));
                         temp.setId(Integer.parseInt(split[2]));
                         fileBackedTaskManager.mapEpic.put(Integer.parseInt(split[1]), temp);
@@ -181,7 +177,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             temp.getIdAllSubTask().add(Integer.parseInt(split[i]));
                         }
                     }
-                    case "SubTask" -> {
+                    case SUBTASK -> {
                         SubTask temp = new SubTask(split[3], split[4], TypeOfTask.valueOf(split[5]));
                         temp.setId(Integer.parseInt(split[2]));
                         fileBackedTaskManager.mapSubTask.put(Integer.parseInt(split[1]), temp);
