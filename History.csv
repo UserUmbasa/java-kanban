@@ -1,0 +1,6 @@
+TASK,0,0,task 0,описание 0,NEW
+TASK,1,1,task 1,описание 1,NEW
+EPIC,2,2,Epic 2,описание 2,NEW,3,5
+SUBTASK,3,3,subTask 3,описание 3,NEW
+SUBTASK,5,5,subTask 5,описание 5,NEW
+6
