@@ -12,8 +12,8 @@ public class Task {
     public TaskClassifier getTaskClass() {
         return taskClassifier;
     }
-
-    public StringBuilder getFormatCsv(int idMap){
+    
+    public StringBuilder getFormatCsv(int idMap) {
         StringBuilder sb = new StringBuilder();
         sb.append(taskClassifier).append(',').append(idMap).append(',').append(id).append(',');
         sb.append(taskDescription).append(',').append(taskDetails).append(',').append(typeOfTask);
