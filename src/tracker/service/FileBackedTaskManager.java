@@ -2,6 +2,8 @@ package tracker.service;
 import tracker.model.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -105,15 +107,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         List<String> resultTask = breakTaskLines(mapTask);
         List<String> resultEpic = breakTaskLines(mapEpic);
         List<String> resultSubTusk = breakTaskLines(mapSubTask);
-        for (String s : resultTask) {
-            result.append(s).append("\n");
-        }
-        for (String s : resultEpic) {
-            result.append(s).append("\n");
-        }
-        for (String s : resultSubTusk) {
-            result.append(s).append("\n");
-        }
+        resultTask.stream().peek(str->result.append(str).append("\n")).toList();
+        resultEpic.stream().peek(str->result.append(str).append("\n")).toList();
+        resultSubTusk.stream().peek(str->result.append(str).append("\n")).toList();
         result.append(id);
         return result.toString();
     }
@@ -125,6 +121,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             StringBuilder str = integerTaskEntry.getValue().getFormatCsv(integerTaskEntry.getKey());
             if (integerTaskEntry.getValue().getTaskClass() == TaskClassifier.EPIC) {
                 Epic epic = (Epic) integerTaskEntry.getValue();
+                //epic.getIdAllSubTask().stream().map(num->str.append())
                 for (Integer integer : epic.getIdAllSubTask()) {
                     str.append(',');
                     str.append(integer.toString());
@@ -167,23 +164,40 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     case TASK -> {
                         Task temp = new Task(split[3], split[4], TypeOfTask.valueOf(split[5]));
                         temp.setId(Integer.parseInt(split[2]));
+                        if (split.length > 6) {
+                            FillTimeData(temp,split[6],split[7],split[8]);
+                            fileBackedTaskManager.prioritizedTasks.add(temp);
+                        }
                         fileBackedTaskManager.mapTask.put(Integer.parseInt(split[1]), temp);
                     }
                     case EPIC -> {
                         Epic temp = new Epic(split[3], split[4], TypeOfTask.valueOf(split[5]));
                         temp.setId(Integer.parseInt(split[2]));
-                        fileBackedTaskManager.mapEpic.put(Integer.parseInt(split[1]), temp);
-                        for (int i = 6; i < split.length; i++) {
-                            temp.getIdAllSubTask().add(Integer.parseInt(split[i]));
+                        if (split.length > 6) {
+                            FillTimeData(temp,split[6],split[7],split[8]);
+                            for (int i = 9; i < split.length; i++) {
+                                temp.getIdAllSubTask().add(Integer.parseInt(split[i]));
+                            }
                         }
+                        fileBackedTaskManager.mapEpic.put(Integer.parseInt(split[1]), temp);
                     }
                     case SUBTASK -> {
                         SubTask temp = new SubTask(split[3], split[4], TypeOfTask.valueOf(split[5]));
                         temp.setId(Integer.parseInt(split[2]));
+                        if (split.length > 6) {
+                            FillTimeData(temp,split[6],split[7],split[8]);
+                            fileBackedTaskManager.prioritizedTasks.add(temp);
+                        }
                         fileBackedTaskManager.mapSubTask.put(Integer.parseInt(split[1]), temp);
                     }
                 }
             }
         }
+    }
+
+    private static void FillTimeData(Task task, String duration, String startData, String endData) {
+        task.setDuration(Duration.ofMinutes(Long.parseLong(duration)));
+        task.setTimeStart(LocalDateTime.parse(startData));
+        task.setTimeEnd(LocalDateTime.parse(endData));
     }
 }
