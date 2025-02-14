@@ -192,8 +192,8 @@ public class InMemoryTaskManager implements TaskManager {
     //-----------------------Удаление по идентификатору--------------------------
     @Override
     public void deleteIdTask(Integer id) {
-        var Task = mapTask.get(id);
-        if (Task.getTimeStart() != null) prioritizedTasks.remove(Task);
+        var task = mapTask.get(id);
+        if (task.getTimeStart() != null) prioritizedTasks.remove(task);
         mapTask.remove(id);
         inMemoryHistoryManager.remove(id);
     }
@@ -222,7 +222,9 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteIdEpic(Integer id) {
         for (Integer idSubTask : mapEpic.get(id).getIdAllSubTask()) {
             var subTask = mapSubTask.get(idSubTask);
-            if (subTask.getTimeStart()!=null) prioritizedTasks.remove(subTask);
+            if (subTask.getTimeStart() != null) {
+                prioritizedTasks.remove(subTask);
+            }
             mapSubTask.remove(idSubTask);
             inMemoryHistoryManager.remove(idSubTask);
         }
@@ -270,7 +272,7 @@ public class InMemoryTaskManager implements TaskManager {
     private void updatingEpicTime(Epic epic) {
         TreeSet<SubTask> prioritized = new TreeSet<>((task1, task2) -> task1.getTimeStart().compareTo(task2.getTimeStart()));
         for (Map.Entry<Integer,SubTask> entry : mapSubTask.entrySet()) {
-            if(entry.getValue().getTaskClass() == TaskClassifier.SUBTASK && entry.getValue().getTimeStart()!= null) {
+            if (entry.getValue().getTaskClass() == TaskClassifier.SUBTASK && entry.getValue().getTimeStart() != null) {
                 prioritized.add(entry.getValue());
             }
         }
