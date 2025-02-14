@@ -31,7 +31,9 @@ public class InMemoryTaskManager implements TaskManager {
             task.setId(id);
             if (task.getTimeStart() == null || !getPrioritizedTasks(task)) {
                 mapTask.put(id++, task);
-                if (task.getTimeStart()!=null) prioritizedTasks.add(task);
+                if (task.getTimeStart() != null) {
+                    prioritizedTasks.add(task);
+                }
             }
         }
     }
@@ -40,15 +42,16 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubTask(int idEpic, SubTask subtask) {
         //мне кажется я скоро перестану понимать что тут происходит =)
         subtask.setId(id);
-        if (mapEpic.containsKey(idEpic) && !mapSubTask.containsValue(subtask)) {
-            if (subtask.getTimeStart() == null || !getPrioritizedTasks(subtask)) {
-                mapEpic.get(idEpic).getIdAllSubTask().add(id);
-                mapSubTask.put(id++, subtask);
-                if (subtask.getTimeStart()==null) return;
-                prioritizedTasks.add(subtask);
-                updatingEpicStatus(idEpic);
-                updatingEpicTime(getIdEpic(idEpic));
+        if ((mapEpic.containsKey(idEpic) && !mapSubTask.containsValue(subtask)) &&
+                (subtask.getTimeStart() == null || !getPrioritizedTasks(subtask))) {
+            mapEpic.get(idEpic).getIdAllSubTask().add(id);
+            mapSubTask.put(id++, subtask);
+            if (subtask.getTimeStart() == null) {
+                return;
             }
+            prioritizedTasks.add(subtask);
+            updatingEpicStatus(idEpic);
+            updatingEpicTime(getIdEpic(idEpic));
         }
     }
 
@@ -82,7 +85,9 @@ public class InMemoryTaskManager implements TaskManager {
         for (Map.Entry<Integer,Task> entry : mapTask.entrySet()) {
             inMemoryHistoryManager.remove(entry.getKey());
             // чистим приоритет
-            if (entry.getValue().getTimeStart() != null) prioritizedTasks.remove(entry.getValue());
+            if (entry.getValue().getTimeStart() != null) {
+                prioritizedTasks.remove(entry.getValue());
+            }
         }
         mapTask.clear();
     }
@@ -96,7 +101,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Map.Entry<Integer,SubTask> entry : mapSubTask.entrySet()) {
             inMemoryHistoryManager.remove(entry.getKey());
-            if(entry.getValue().getTimeStart() != null) prioritizedTasks.remove(entry.getValue());
+            if (entry.getValue().getTimeStart() != null) {
+                prioritizedTasks.remove(entry.getValue());
+            }
         }
         for (Integer idEpic : mapEpic.keySet()) {
             updatingEpicTime(mapEpic.get(idEpic));
@@ -198,7 +205,9 @@ public class InMemoryTaskManager implements TaskManager {
             var result = epic.getIdAllSubTask();
             if (result.contains(id)) {
                 var subTask = mapSubTask.get(id);
-                if(subTask.getTimeStart() != null) prioritizedTasks.remove(subTask);
+                if (subTask.getTimeStart() != null) {
+                    prioritizedTasks.remove(subTask);
+                }
                 result.remove(id);
                 inMemoryHistoryManager.remove(id);
                 mapSubTask.remove(id);
