@@ -23,7 +23,7 @@ public class Task {
         sb.append(taskClassifier).append(',').append(idMap).append(',').append(id).append(',');
         sb.append(taskDescription).append(',').append(taskDetails).append(',').append(typeOfTask);
         // время приоритета
-        if (timeStart!= null) {
+        if (timeStart != null) {
             sb.append(',').append(duration.getSeconds() / 60).append(',').append(timeStart).append(',').append(timeEnd);
         }
         return sb;

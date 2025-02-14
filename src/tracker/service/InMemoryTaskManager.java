@@ -29,7 +29,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Task task) {
         if (!mapTask.containsValue(task)) {
             task.setId(id);
-            if (task.getTimeStart()==null || !getPrioritizedTasks(task)) {
+            if (task.getTimeStart() == null || !getPrioritizedTasks(task)) {
                 mapTask.put(id++, task);
                 if (task.getTimeStart()!=null) prioritizedTasks.add(task);
             }
@@ -82,7 +82,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Map.Entry<Integer,Task> entry : mapTask.entrySet()) {
             inMemoryHistoryManager.remove(entry.getKey());
             // чистим приоритет
-            if (entry.getValue().getTimeStart()!=null) prioritizedTasks.remove(entry.getValue());
+            if (entry.getValue().getTimeStart() != null) prioritizedTasks.remove(entry.getValue());
         }
         mapTask.clear();
     }
@@ -96,7 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Map.Entry<Integer,SubTask> entry : mapSubTask.entrySet()) {
             inMemoryHistoryManager.remove(entry.getKey());
-            if(entry.getValue().getTimeStart()!=null) prioritizedTasks.remove(entry.getValue());
+            if(entry.getValue().getTimeStart() != null) prioritizedTasks.remove(entry.getValue());
         }
         for (Integer idEpic : mapEpic.keySet()) {
             updatingEpicTime(mapEpic.get(idEpic));
@@ -186,7 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteIdTask(Integer id) {
         var Task = mapTask.get(id);
-        if (Task.getTimeStart()!=null) prioritizedTasks.remove(Task);
+        if (Task.getTimeStart() != null) prioritizedTasks.remove(Task);
         mapTask.remove(id);
         inMemoryHistoryManager.remove(id);
     }
@@ -198,7 +198,7 @@ public class InMemoryTaskManager implements TaskManager {
             var result = epic.getIdAllSubTask();
             if (result.contains(id)) {
                 var subTask = mapSubTask.get(id);
-                if(subTask.getTimeStart()!=null) prioritizedTasks.remove(subTask);
+                if(subTask.getTimeStart() != null) prioritizedTasks.remove(subTask);
                 result.remove(id);
                 inMemoryHistoryManager.remove(id);
                 mapSubTask.remove(id);
