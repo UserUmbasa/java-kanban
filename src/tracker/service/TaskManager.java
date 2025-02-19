@@ -34,7 +34,7 @@ public interface TaskManager  {
     Epic getIdEpic(Integer id);
 
     //---------Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.---
-    void updatingTask(Integer id, Task task);
+    void updatingTask(Integer id, Task task) throws Exception;
 
     void updatingSubTask(Integer id, SubTask subTask);
 
