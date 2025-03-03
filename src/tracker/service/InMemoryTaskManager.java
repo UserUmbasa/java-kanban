@@ -8,6 +8,7 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected Integer id = 0;
+    protected int code = 0;
     protected final Map<Integer, Task> mapTask;
     protected final Map<Integer, Epic> mapEpic;
     protected final Map<Integer, SubTask> mapSubTask;
@@ -18,6 +19,14 @@ public class InMemoryTaskManager implements TaskManager {
         this.mapTask = new HashMap<>();
         this.mapEpic = new HashMap<>();
         this.mapSubTask = new HashMap<>();
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
     //------------------------Создание. Сам объект должен передаваться в качестве параметра.----------
@@ -34,7 +43,12 @@ public class InMemoryTaskManager implements TaskManager {
                 if (task.getTimeStart() != null) {
                     prioritizedTasks.add(task);
                 }
+                code = 201;
+            } else {
+                code = 406;
             }
+        } else {
+            code = 406;
         }
     }
 
@@ -46,12 +60,15 @@ public class InMemoryTaskManager implements TaskManager {
                 (subtask.getTimeStart() == null || !getPrioritizedTasks(subtask))) {
             mapEpic.get(idEpic).getIdAllSubTask().add(id);
             mapSubTask.put(id++, subtask);
+            code = 201;
             if (subtask.getTimeStart() == null) {
                 return;
             }
             prioritizedTasks.add(subtask);
             updatingEpicStatus(idEpic);
             updatingEpicTime(getIdEpic(idEpic));
+        } else {
+            code = 406;
         }
     }
 
@@ -60,6 +77,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (!mapEpic.containsValue(epic)) {
             epic.setId(id);
             mapEpic.put(id++, epic);
+            code = 201;
+        } else {
+            code = 406;
         }
     }
 
@@ -123,20 +143,29 @@ public class InMemoryTaskManager implements TaskManager {
     //---------------------Получение по идентификатору.----------------------------
     @Override
     public Task getIdTask(Integer id) {
-        inMemoryHistoryManager.add(mapTask.get(id));
-        return mapTask.get(id);
+        if (mapTask.containsKey(id)) {
+            inMemoryHistoryManager.add(mapTask.get(id));
+            return mapTask.get(id);
+        }
+        return null;
     }
 
     @Override
     public SubTask getIdSubTask(Integer id) {
-        inMemoryHistoryManager.add(mapSubTask.get(id));
-        return mapSubTask.get(id);
+        if (mapSubTask.containsKey(id)) {
+            inMemoryHistoryManager.add(mapSubTask.get(id));
+            return mapSubTask.get(id);
+        }
+        return null;
     }
 
     @Override
     public Epic getIdEpic(Integer id) {
-        inMemoryHistoryManager.add(mapEpic.get(id));
-        return mapEpic.get(id);
+        if (mapEpic.containsKey(id)) {
+            inMemoryHistoryManager.add(mapEpic.get(id));
+            return mapEpic.get(id);
+        }
+        return null;
     }
 
     //---------Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.---
@@ -165,6 +194,8 @@ public class InMemoryTaskManager implements TaskManager {
             if (!getPrioritizedTasks(subTask)) {
                 map.put(id, subTask);
                 prioritizedTasks.add(subTask);
+            } else {
+                code = 406;
             }
         } else if (taskTemp.getTimeStart() != null && subTask.getTimeStart() == null) {
             prioritizedTasks.remove(taskTemp);
@@ -175,11 +206,13 @@ public class InMemoryTaskManager implements TaskManager {
                 map.put(id, subTask);
                 prioritizedTasks.add(subTask);
             } else {
+                code = 406;
                 prioritizedTasks.add(taskTemp);
             }
         } else {
             map.put(id, subTask);
         }
+        code = 201;
     }
 
     @Override
@@ -192,10 +225,12 @@ public class InMemoryTaskManager implements TaskManager {
     //-----------------------Удаление по идентификатору--------------------------
     @Override
     public void deleteIdTask(Integer id) {
-        var task = mapTask.get(id);
-        if (task.getTimeStart() != null) prioritizedTasks.remove(task);
-        mapTask.remove(id);
-        inMemoryHistoryManager.remove(id);
+        if (mapTask.containsKey(id)) {
+            var task = mapTask.get(id);
+            if (task.getTimeStart() != null) prioritizedTasks.remove(task);
+            mapTask.remove(id);
+            inMemoryHistoryManager.remove(id);
+        }
     }
 
     @Override
@@ -220,16 +255,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteIdEpic(Integer id) {
-        for (Integer idSubTask : mapEpic.get(id).getIdAllSubTask()) {
-            var subTask = mapSubTask.get(idSubTask);
-            if (subTask.getTimeStart() != null) {
-                prioritizedTasks.remove(subTask);
+        if (mapEpic.containsKey(id)) {
+            for (Integer idSubTask : mapEpic.get(id).getIdAllSubTask()) {
+                var subTask = mapSubTask.get(idSubTask);
+                if (subTask.getTimeStart() != null) {
+                    prioritizedTasks.remove(subTask);
+                }
+                mapSubTask.remove(idSubTask);
+                inMemoryHistoryManager.remove(idSubTask);
             }
-            mapSubTask.remove(idSubTask);
-            inMemoryHistoryManager.remove(idSubTask);
+            mapEpic.remove(id);
+            inMemoryHistoryManager.remove(id);
         }
-        mapEpic.remove(id);
-        inMemoryHistoryManager.remove(id);
     }
 
     //------------------------- Получение списка всех подзадач определённого эпика-------------
